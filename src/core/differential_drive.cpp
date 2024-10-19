@@ -9,6 +9,10 @@
  * based on positional and rotational inputs
 */
 
+// define mathematical constants
+#define PI_FOURTH  0.7854
+#define TWO_PI 6.2832
+
 // define motor driver pin numbers
 #define LEFT_FORWARD 19
 #define LEFT_REVERSE 21
@@ -165,6 +169,65 @@ public:
         rightMotor.SetSpeed(rightSpeed);
         
     }
+
+    /**
+     * Convert a directional angle to wheel speed percentages according
+     * to the inverse kinematics of a differential drive robot
+     * 
+     * angle: the requested driving angle for the differential drive robot
+     * 
+     * returns:
+     *  Vector2D(left, right): a vector containing the left and right wheel's
+     *  driving percentages for the given angle
+    */
+    Vector2D DifferentialDriveInverseKinematics(double angle)
+    {
+        double left_percentage;
+        double right_percentage;
+
+        if(angle <= 1 * PI_FOURTH)
+        {
+            left_percentage = tan(-angle + PI_FOURTH);
+            right_percentage = 1;
+        }
+        else if (angle <= 2 * PI_FOURTH)
+        {
+            left_percentage = tan(angle + PI_FOURTH);
+            right_percentage = 1;
+        }
+        else if (angle <= 3 * PI_FOURTH)
+        {
+            left_percentage = -1;
+            right_percentage = tan(3*PI_FOURTH - angle);
+        }
+        else if (angle <= 4 * PI_FOURTH)
+        {
+            left_percentage = -1;
+            right_percentage = tan(angle - PI_FOURTH);
+        }
+        else if (angle <= 5 * PI_FOURTH)
+        {
+            left_percentage = tan(5*PI_FOURTH - angle);     
+            right_percentage = -1;
+        }
+        else if (angle <= 6 * PI_FOURTH)
+        {
+            left_percentage = tan(angle - 3*PI_FOURTH);     
+            right_percentage = -1;                 
+        }
+        else if (angle <= 7 * PI_FOURTH)
+        {
+            left_percentage = 1;     
+            right_percentage = tan(7*PI_FOURTH - angle); 
+        }
+         else if (angle <= 8 * PI_FOURTH)
+        {
+            left_percentage = 1;
+            right_percentage = tan(angle - 5*PI_FOURTH);     
+        }
+        return Vector2D(left_percentage,right_percentage);
+    }
+
     /**
      * Drive with the given speed in the given direction
      * speed: the speed to drive with. speed of the fastest wheel
@@ -174,7 +237,9 @@ public:
      * 
      * angle: the angle in radians to rotate while driving; right-handed and towards the robot x-axis (pointing forward) 
      * Notable Angles (edge cases):
-     *  0 (0°) : forward (no rotation)
+     *
+     *  0 (0°) | pi * 8/4 (360°) : forward (no rotation)
+     *
      * Left Rotations:
      *  pi*1/4 (45°): turn left only using the right wheel
      *  pi*2/4 (90°): turn left on the spot
@@ -183,16 +248,24 @@ public:
      *  pi     (180°): reverse (no rotation)
      * 
      * Right rotations:  
-     *  -pi*1/4 (-45°): turn right only using the left wheel
-     *  -pi*2/4 (-90°): turn right on the spot
-     *  -pi*3/4 (-135°): turn right only using the right wheel (backwards)
-     * 
-     *  std::numeric_limits<float>::infinity() for driving straight
+     *  pi*5/4 (225°): turn right only using the left wheel
+     *  pi*6/4 (270°): turn right on the spot
+     *  pi*7/4 (315°): turn right only using the right wheel (backwards)
+     *  
      * 
     */
-    void Drive(int speed, float angle)
+    void Drive(int speed, double angle)
     {
-        //todo
+        // normalize angle to be within 0 - 2*pi
+        angle = angle - (int(angle/TWO_PI)*TWO_PI);
+        // calculate the motor speeds according to the angle
+        Vector2D inverseKinematics = DifferentialDriveInverseKinematics(angle);
+        // apply the speed to the results
+        int left_speed = inverseKinematics.x * speed;
+        int right_speed = inverseKinematics.y * speed;
+        // set the speed to the motors
+        leftMotor.SetSpeed(left_speed);
+        rightMotor.SetSpeed(right_speed);
     }
 
     void Stop()
