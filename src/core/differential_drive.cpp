@@ -10,8 +10,8 @@
 */
 
 // define mathematical constants
-#define PI_FOURTH  0.7854
-#define TWO_PI 6.2832
+#define PI_FOURTH  0.7853981634
+#define TWO_PI 6.283185307179586476925286766559
 
 // define motor driver pin numbers
 #define LEFT_FORWARD 19
@@ -177,55 +177,38 @@ public:
      * angle: the requested driving angle for the differential drive robot
      * 
      * returns:
-     *  Vector2D(left, right): a vector containing the left and right wheel's
+     *  std::tuple<double,double>: a vector containing the left and right wheel's
      *  driving percentages for the given angle
     */
-    Vector2D DifferentialDriveInverseKinematics(double angle)
+    static std::tuple<double, double>  DifferentialDriveInverseKinematics(double angle)
     {
         double left_percentage;
         double right_percentage;
 
-        if(angle <= 1 * PI_FOURTH)
+        //todo: normalize angle here with custom function
+
+        if(angle <= 2 * PI_FOURTH)
         {
-            left_percentage = tan(-angle + PI_FOURTH);
+            left_percentage = tan(PI_FOURTH - angle);
             right_percentage = 1;
-        }
-        else if (angle <= 2 * PI_FOURTH)
-        {
-            left_percentage = tan(angle + PI_FOURTH);
-            right_percentage = 1;
-        }
-        else if (angle <= 3 * PI_FOURTH)
-        {
-            left_percentage = -1;
-            right_percentage = tan(3*PI_FOURTH - angle);
         }
         else if (angle <= 4 * PI_FOURTH)
         {
             left_percentage = -1;
-            right_percentage = tan(angle - PI_FOURTH);
-        }
-        else if (angle <= 5 * PI_FOURTH)
-        {
-            left_percentage = tan(5*PI_FOURTH - angle);     
-            right_percentage = -1;
+            right_percentage = tan(3*PI_FOURTH - angle); 
         }
         else if (angle <= 6 * PI_FOURTH)
         {
-            left_percentage = tan(angle - 3*PI_FOURTH);     
-            right_percentage = -1;                 
+            left_percentage = tan(angle - 5*PI_FOURTH);
+            right_percentage = -1; 
         }
-        else if (angle <= 7 * PI_FOURTH)
+        else if (angle <= 8 * PI_FOURTH)
         {
             left_percentage = 1;     
-            right_percentage = tan(7*PI_FOURTH - angle); 
+            right_percentage = tan(angle - 7*PI_FOURTH);
         }
-         else if (angle <= 8 * PI_FOURTH)
-        {
-            left_percentage = 1;
-            right_percentage = tan(angle - 5*PI_FOURTH);     
-        }
-        return Vector2D(left_percentage,right_percentage);
+        printf("inside function: l %f r %f\n", left_percentage, right_percentage);
+        return std::make_tuple(left_percentage,right_percentage);
     }
 
     /**
@@ -259,7 +242,7 @@ public:
         // normalize angle to be within 0 - 2*pi
         angle = angle - (int(angle/TWO_PI)*TWO_PI);
         // calculate the motor speeds according to the angle
-        Vector2D inverseKinematics = DifferentialDriveInverseKinematics(angle);
+        Vector2D inverseKinematics; //= DifferentialDriveInverseKinematics(angle);  //todo disabled fro testing
         // apply the speed to the results
         int left_speed = inverseKinematics.x * speed;
         int right_speed = inverseKinematics.y * speed;
