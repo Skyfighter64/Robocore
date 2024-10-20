@@ -1,6 +1,13 @@
 #include <Arduino.h>
 #include <core/differential_drive.cpp>
 
+
+/**
+ * This file shows how to let a differential drive robot drive around
+ * with a given angle and speed
+*/
+
+
 DifferentialDrive robot = DifferentialDrive();
 void setup() 
 {
