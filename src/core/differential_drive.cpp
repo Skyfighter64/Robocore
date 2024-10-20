@@ -228,8 +228,8 @@ public:
      *    0: stopped
      *  255: full speed
      * 
-     * angle: the angle in radians to rotate while driving; right-handed and towards the robot x-axis (pointing forward) 
-     * Notable Angles (edge cases):
+     * angle: the angle in radians to rotate while driving; right-handed rotation around the z-axis with 0 at the robot x-axis (pointing forward) 
+     * Notable Angles:
      *
      *  0 (0°) | pi * 8/4 (360°) : forward (no rotation)
      *
@@ -249,15 +249,17 @@ public:
     */
     void Drive(int speed, double angle)
     {
-       
+        double left_speed;
+        double right_speed;
         // calculate the motor speeds according to the angle
-        Vector2D inverseKinematics; //= DifferentialDriveInverseKinematics(angle);  //todo disabled fro testing
-        // apply the speed to the results
-        int left_speed = inverseKinematics.x * speed;
-        int right_speed = inverseKinematics.y * speed;
+        std::tie(left_speed,right_speed) = DifferentialDriveInverseKinematics(angle); 
+        // scale the values to given speed
+        left_speed *= speed;
+        right_speed *= speed;
+        
         // set the speed to the motors
-        leftMotor.SetSpeed(left_speed);
-        rightMotor.SetSpeed(right_speed);
+        leftMotor.SetSpeed(int(left_speed));
+        rightMotor.SetSpeed(int(right_speed));
     }
 
     void Stop()
