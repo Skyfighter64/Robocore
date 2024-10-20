@@ -171,6 +171,16 @@ public:
     }
 
     /**
+     * normalize angle to be within 0 - 2*pi
+     * angle: any angle in radiants
+     * returns:
+     *  the angles equivalent within 0 - 2*pi
+    */
+    static double NormalizeAngle(double angle)
+    {
+        return angle - (std::floor(angle/TWO_PI)*TWO_PI);
+    }
+    /**
      * Convert a directional angle to wheel speed percentages according
      * to the inverse kinematics of a differential drive robot
      * 
@@ -185,7 +195,8 @@ public:
         double left_percentage;
         double right_percentage;
 
-        //todo: normalize angle here with custom function
+        //normalize angle to be within 0 to 2*pi
+        angle = NormalizeAngle(angle);
 
         if(angle <= 2 * PI_FOURTH)
         {
@@ -207,7 +218,6 @@ public:
             left_percentage = 1;     
             right_percentage = tan(angle - 7*PI_FOURTH);
         }
-        printf("inside function: l %f r %f\n", left_percentage, right_percentage);
         return std::make_tuple(left_percentage,right_percentage);
     }
 
@@ -239,8 +249,7 @@ public:
     */
     void Drive(int speed, double angle)
     {
-        // normalize angle to be within 0 - 2*pi
-        angle = angle - (int(angle/TWO_PI)*TWO_PI);
+       
         // calculate the motor speeds according to the angle
         Vector2D inverseKinematics; //= DifferentialDriveInverseKinematics(angle);  //todo disabled fro testing
         // apply the speed to the results

@@ -49,10 +49,27 @@ void test_function_DifferentialDriveInverseKinematics()
     TEST_ASSERT_DOUBLE_WITHIN(0.001, 0, right);
 }
 
+void test_function_NormalizeAngle()
+{
+  TEST_ASSERT_DOUBLE_WITHIN(0.001, 0, DifferentialDrive::NormalizeAngle(0));
+  TEST_ASSERT_DOUBLE_WITHIN(0.001, 0, DifferentialDrive::NormalizeAngle(TWO_PI));
+  TEST_ASSERT_DOUBLE_WITHIN(0.001, 0, DifferentialDrive::NormalizeAngle(2*TWO_PI));
+  TEST_ASSERT_DOUBLE_WITHIN(0.001, 0, DifferentialDrive::NormalizeAngle(-2*TWO_PI));
+
+  TEST_ASSERT_DOUBLE_WITHIN(0.001, PI, DifferentialDrive::NormalizeAngle(PI));
+  TEST_ASSERT_DOUBLE_WITHIN(0.001, 0.1528, DifferentialDrive::NormalizeAngle(0.1528));
+  TEST_ASSERT_DOUBLE_WITHIN(0.001, 0.1528, DifferentialDrive::NormalizeAngle(TWO_PI + 0.1528));
+  TEST_ASSERT_DOUBLE_WITHIN(0.001, TWO_PI - 0.1528, DifferentialDrive::NormalizeAngle(- 0.1528));
+
+  TEST_ASSERT_DOUBLE_WITHIN(0.001, 0.1528, DifferentialDrive::NormalizeAngle(- TWO_PI + 0.1528));
+
+}
+
 int runUnityTests(void)
 {
     UNITY_BEGIN();
-
+    
+    RUN_TEST(test_function_NormalizeAngle); 
     RUN_TEST(test_function_DifferentialDriveInverseKinematics);   
 
     return UNITY_END();
