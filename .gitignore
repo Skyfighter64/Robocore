@@ -3,4 +3,7 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+.vscode/*
 credentials.h
+src/webserver/template.cpp
+src/webserver/_test_index.html
