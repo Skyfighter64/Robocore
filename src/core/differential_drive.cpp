@@ -22,12 +22,6 @@
 #define RIGHT_FORWARD 22
 #define RIGHT_REVERSE 23
 
-//define rotary encoder pin numbers
-#define LEFT_ENCODER 3
-#define RIGHT_ENCODER 4
-// encoder specific parameters
-#define ENCODER_STEPS 36
-#define HISTORY_SIZE 5
 
 #define WHEEL_CIRCUMFENCE_MM 314
 #define WHEEL_DISTANCE_MM 270
