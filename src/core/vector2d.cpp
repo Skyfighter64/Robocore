@@ -1,6 +1,9 @@
 /**
  * Class representing 2-dimensional Vectors
 */
+#ifndef VECTOR_2D_CPP
+#define VECTOR_2D_CPP
+
 class Vector2D
 {
 public: 
@@ -29,3 +32,4 @@ public:
     }
 
 };
+#endif //VECTOR_2D_CPP

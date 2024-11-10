@@ -1,7 +1,8 @@
 #include <stdint.h>
 #include <Arduino.h>
 
-
+#ifndef MOTOR_DRIVER_CPP
+#define MOTOR_DRIVER_CPP
 /**
  * Motor Driver class for classical H-Bridge Motor drivers
  * with Reverse and Forward inputs
@@ -137,3 +138,4 @@ public:
 
 
 };
+#endif //MOTOR_DRIVER_CPP

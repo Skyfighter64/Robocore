@@ -4,6 +4,9 @@
 #include <ESPAsyncWebServer.h>
 #include <webserver/index.html>
 
+#ifndef ROBOT_WEB_SERVER_CPP
+#define ROBOT_WEB_SERVER_CPP
+
 /**
  * A webserver for the robot displaying updated information
  * using websockets
@@ -107,3 +110,4 @@ class RobotWebServer
   }
 
 };
+#endif //ROBOT_WEB_SERVER_CPP

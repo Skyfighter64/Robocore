@@ -1,4 +1,8 @@
 #include <Arduino.h>
+#include <webserver/RobotWebServer.cpp>
+
+#ifndef LOGGER_CPP
+#define LOGGER_CPP
 /**
  * 
  * class providing logging 
@@ -11,6 +15,8 @@ class Logger
 {
 
 private:
+    RobotWebServer server;
+
     String getTimeStamp()
     {
         unsigned long time = millis();
@@ -29,6 +35,15 @@ private:
 public:
 
 /**
+ * default constructor
+ * _server: instance of a robotWebServer
+*/
+Logger(RobotWebServer &_server) : server(_server)
+{
+
+}
+
+/**
  * convert the given string into logger format
 */
 String createLogLine(String text)
@@ -38,7 +53,7 @@ String createLogLine(String text)
 
 void print(String text)
 {
-        // todo
+    this->server.sendText(createLogLine(text));
 }
 
 /*
@@ -55,3 +70,5 @@ todos for this class:
 
 
 };
+
+#endif //LOGGER_CPP

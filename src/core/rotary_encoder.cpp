@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <stdint.h>
 
+#ifndef ROTARY_ENCODER_CPP
+#define ROTARY_ENCODER_CPP
 /** 
  *  Rotary encoder library for (optical) counters such as HW-201
  *  
@@ -139,3 +141,5 @@ private:
   }
 
 };
+
+#endif //ROTARY_ENCODER_CPP

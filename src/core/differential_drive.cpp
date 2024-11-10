@@ -3,6 +3,9 @@
 #include "vector2d.cpp"
 #include <limits>
 
+#ifndef DIFFERENTIAL_DRIVE_CPP
+#define DIFFERENTIAL_DRIVE_CPP
+
 /**
  * This class serves as differential drive kinematic and inverse kinematic,
  * calculating the robots position from its sensors and letting it drive 
@@ -269,3 +272,4 @@ public:
     }
 
 };
+#endif //DIFFERENTIAL_DRIVE_CPP
