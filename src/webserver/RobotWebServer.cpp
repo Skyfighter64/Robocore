@@ -65,26 +65,26 @@ class RobotWebServer
   void start()
   {
     // open serial if not already done
-    if(!Serial)
+    /*if(!Serial)
     {
       Serial.begin(115200);
-    }
+    }*/
 
-    Serial.print("Connecting to ");
-    Serial.println(WIFI_SSID);
+    //Serial.print("Connecting to ");
+    //Serial.println(WIFI_SSID);
 
     // Connect to Wi-Fi
     WiFi.begin(WIFI_SSID, WIFI_PW);
     while (WiFi.status() != WL_CONNECTED) 
     {
       delay(1000);
-      Serial.print(".");
+      //Serial.print(".");
     }
 
-    Serial.println("");
-    Serial.println("Connected..!");
-    Serial.print("Got IP: ");  
-    Serial.println(WiFi.localIP());
+    //Serial.println("");
+    //Serial.println("Connected..!");
+    //Serial.print("Got IP: ");  
+    //Serial.println(WiFi.localIP());
 
     // add event handler
     webSocket_ptr->onEvent(this->eventHandler);
