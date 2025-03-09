@@ -28,26 +28,20 @@ void setup()
   delay(5000);
   digitalWrite(LED_BUILTIN, LOW);
   server.start();
-
-  // put your setup code here, to run once:
-  delay(3000);
-  robot.Stop();
 }
 
 void loop() {
-
-  robot.Drive(255, PI_FOURTH);
   // update encoders
-  for(int i = 0; i < 1; i++)
-  {
-    encoderL.Update();
-    encoderR.Update();
-  }
-  if(encoderL.peekCountDelta() > 0 || encoderR.peekCountDelta() > 0)
-  {
-    logger.print("Left: ");
-    logger.print(String(encoderL.getCount()));
-    logger.print("Right: ");
-    logger.print(String(encoderR.getCount()));
-  }
+   for(int i = 0; i < 1000; i++)
+   {
+     encoderL.Update();
+     encoderR.Update();
+   }
+   if(encoderL.peekCountDelta() > 0 || encoderR.peekCountDelta() > 0)
+   {
+     logger.print("Left: ");
+     logger.print(String(encoderL.getCount()));
+     logger.print("Right: ");
+     logger.print(String(encoderR.getCount()));
+   }
 }
