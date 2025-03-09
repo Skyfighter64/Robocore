@@ -3,9 +3,11 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <webserver/index.html>
+#include <Arduino.h>
 
 #ifndef ROBOT_WEB_SERVER_CPP
 #define ROBOT_WEB_SERVER_CPP
+
 
 /**
  * A webserver for the robot displaying updated information
@@ -70,6 +72,8 @@ class RobotWebServer
       Serial.begin(115200);
     }*/
 
+    pinMode(LED_BUILTIN, OUTPUT);
+
     //Serial.print("Connecting to ");
     //Serial.println(WIFI_SSID);
 
@@ -77,9 +81,14 @@ class RobotWebServer
     WiFi.begin(WIFI_SSID, WIFI_PW);
     while (WiFi.status() != WL_CONNECTED) 
     {
-      delay(1000);
+      digitalWrite(LED_BUILTIN, LOW);
+      delay(500);
+      digitalWrite(LED_BUILTIN, HIGH);
+      delay(500);
       //Serial.print(".");
     }
+
+    digitalWrite(LED_BUILTIN, HIGH);
 
     //Serial.println("");
     //Serial.println("Connected..!");
