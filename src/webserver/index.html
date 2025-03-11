@@ -1,61 +1,123 @@
 #ifndef INDEX_HTML
 #define INDEX_HTML
 const char index_html[] PROGMEM = R"rawliteral(
-  <!DOCTYPE html>
-  <html>
-    <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-      <title>ESP32 WebSocket Server</title>
-      <style>
-      html{font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}
-      body{margin-top: 50px;}
-      h1{color: #444444;margin: 50px auto;}
-      p{font-size: 19px;color: #888;}
-      #state{font-weight: bold;color: #444;}
-      .switch{margin:25px auto;width:80px}
-      .toggle{display:none}
-      .toggle+label{display:block;position:relative;cursor:pointer;outline:0;user-select:none;padding:2px;width:80px;height:40px;background-color:#ddd;border-radius:40px}
-      .toggle+label:before,.toggle+label:after{display:block;position:absolute;top:1px;left:1px;bottom:1px;content:""}
-      .toggle+label:before{right:1px;background-color:#f1f1f1;border-radius:40px;transition:background .4s}
-      .toggle+label:after{width:40px;background-color:#fff;border-radius:20px;box-shadow:0 2px 5px rgba(0,0,0,.3);transition:margin .4s}
-      .toggle:checked+label:before{background-color:#4285f4}
-      .toggle:checked+label:after{margin-left:42px}
-      </style>
-    </head>
-    <body>
-      <h1>ESP32 Robot Websocket Server</h1>
-      <div align="center"> 
-          <h2>Log:</h2>
-          <pre id="log_text" style="text-align:left;height:500px;width:800px;border:1px solid #ccc;overflow:auto;display:flex;flex-direction:column-reverse;"></pre>
-      </div>
-  
-      <script>
-      window.addEventListener('load', function() {
-      var websocket = new WebSocket(`ws://${window.location.hostname}/ws`);
-      websocket.onopen = function(event) {
-        console.log('Connection established');
-      }
-      websocket.onclose = function(event) {
-        console.log('Connection died');
-      }
-      websocket.onerror = function(error) {
-        console.log('Websocket: error');
-      };
-      websocket.onmessage = function(event) {
-        appendLog(event.data);
-      };
-      });
-      function appendLog(text)
-      {
-        // escape any html, etc...
-        text = document.createTextNode(text);
-        console.log('Appending text: ' + text);
-        document.getElementById('log_text').appendChild(text);
-      };
-  
-    </script>
-    </body>
-  </html>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ESP32 WebSocket Server</title>
+    <style>
+    html{font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}
+    body{margin-top: 50px;}
+    h1{color: #444444;margin: 50px auto;}
+    p{font-size: 19px;color: #888;}
+    #state{font-weight: bold;color: #444;}
+    .switch{margin:25px auto;width:80px}
+    .toggle{display:none}
+    .toggle+label{display:block;position:relative;cursor:pointer;outline:0;user-select:none;padding:2px;width:80px;height:40px;background-color:#ddd;border-radius:40px}
+    .toggle+label:before,.toggle+label:after{display:block;position:absolute;top:1px;left:1px;bottom:1px;content:""}
+    .toggle+label:before{right:1px;background-color:#f1f1f1;border-radius:40px;transition:background .4s}
+    .toggle+label:after{width:40px;background-color:#fff;border-radius:20px;box-shadow:0 2px 5px rgba(0,0,0,.3);transition:margin .4s}
+    .toggle:checked+label:before{background-color:#4285f4}
+    .toggle:checked+label:after{margin-left:42px}
+    .button {
+    padding: 15px 50px;
+    font-size: 24px;
+    text-align: center;
+    outline: none;
+    color: #fff;
+    background-color: #0f8b8d;
+    border: none;
+    border-radius: 5px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+   }
+    </style>
+  </head>
+  <body>
+    <h1>ESP32 Robot Websocket Server</h1>
+    <div align="center"> 
+        <h2>Log:</h2>
+        <pre id="log_text" style="text-align:left;height:500px;width:800px;border:1px solid #ccc;overflow:auto;display:flex;flex-direction:column-reverse;">
+        </pres>
+    </div>
+    <p><button id="stopButton" class="button">Stop</button></p>
+    <p><button id="forwardButton" class="button">Forward</button></p>
+    <p><button id="turnLeftButton" class="button">Turn Left</button></p>
+    <p><button id="turnRightButton" class="button">Turn Right</button></p>
+
+    <script>
+var gateway = `ws://${window.location.hostname}/ws`;
+var websocket;
+
+function initWebSocket() 
+{
+  console.log('Trying to open a WebSocket connection...');
+  websocket = new WebSocket(gateway);
+  websocket.onopen    = onOpen;
+  websocket.onclose   = onClose;
+  websocket.onmessage = onMessage; // <-- add this line
+}
+function onOpen(event) 
+{
+  console.log('Connection opened');
+}
+
+function onClose(event) 
+{
+  console.log('Connection closed');
+  setTimeout(initWebSocket, 5000);
+}
+
+function onMessage(event) 
+{
+  // append log data to the log
+  appendLog(event.data);
+}
+// initialize web socket and buttons
+window.addEventListener('load', onLoad);
+function onLoad(event) {
+  initWebSocket();
+  initButton();
+}
+
+function initButton() 
+{
+  document.getElementById('stopButton').addEventListener('click', stopRobot);
+  document.getElementById('forwardButton').addEventListener('click', forwardRobot);
+  document.getElementById('turnLeftButton').addEventListener('click', function(){ websocket.send("turnLeft");});
+  document.getElementById('turnRightButton').addEventListener('click', function(){ websocket.send("turnRight");});
+}
+function toggle()
+{
+  websocket.send('toggle');
+}
+
+function appendLog(text)
+{
+  // escape any html, etc...
+  text = document.createTextNode(text);
+  console.log('Appending text: ' + text);
+  document.getElementById('log_text').appendChild(text);
+};
+
+function stopRobot(){
+  websocket.send('stopRobot');
+  console.log("stopped robot");
+}
+function forwardRobot(){
+  websocket.send('forward');
+  console.log("Forward robot");
+}
+
+	</script>
+  </body>
+</html>
 )rawliteral";
 
 #endif //INDEX_HTML

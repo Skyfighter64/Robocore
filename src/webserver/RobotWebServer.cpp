@@ -40,6 +40,8 @@ class RobotWebServer
     delete this->webSocket_ptr;
   }
 
+  /* Move event handler into main
+  // handle incoming websocket events by event type
   static void eventHandler(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
   {
     switch (type) 
@@ -53,18 +55,38 @@ class RobotWebServer
       case WS_EVT_DATA:
       // web socket events come in here
         //handleWebSocketMessage(arg, data, len);
+        Serial.printf("Got event data ");
+        processEvent(arg, data, len);
         break;
       case WS_EVT_PONG:
       case WS_EVT_ERROR:
         break;
     }
   }
+  
+  // process any ws_text events
+  static void processEvent(void *arg, uint8_t *data, size_t len)
+  {
+    AwsFrameInfo *info = (AwsFrameInfo*)arg;
+    if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) 
+    {
+      data[len] = 0; // ??? why is there no nullptr already?
+      if (strcmp((char*)data, "stopRobot") == 0) 
+      {
+        //this->sendText("stopped robot");
+        Serial.println("stopped robot");
+      }
+
+      // Todo: make outside class register onclick events with function pointers for a data string
+    }
+  } 
+  */
 
 
   /**
    * Initialize and start the webserver
   */
-  void start()
+  void start(AwsEventHandler eventHandler)
   {
     // open serial if not already done
     /*if(!Serial)
@@ -96,7 +118,7 @@ class RobotWebServer
     //Serial.println(WiFi.localIP());
 
     // add event handler
-    webSocket_ptr->onEvent(this->eventHandler);
+    webSocket_ptr->onEvent(eventHandler);
     server_ptr->addHandler(webSocket_ptr);
 
     // set up callback for http get requests
