@@ -28,6 +28,27 @@ void processEvent(void *arg, uint8_t *data, size_t len)
   if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) 
   {
     data[len] = 0;
+    float angle = 0;
+    int speed = 0;
+
+   
+
+    if (strchr((char*)data, ':') != nullptr) 
+    {
+      Serial.println((char*)data);
+      // check if data contains a drive command
+      sscanf((char*)data, "drive:%d,%f", &speed, &angle);
+      Serial.println("Drive command:");
+      Serial.print(speed);
+      Serial.print(",");
+      Serial.println(angle);
+
+      logger.print((String)"Driving: speed: " +  String(speed) +" angle: " + String(angle));
+      robot.Drive(speed, angle);
+    }
+    
+
+
     // check here for incoming button presses
     if (strcmp((char*)data, "stopRobot") == 0) 
     {
@@ -91,7 +112,6 @@ void setup()
   // put your setup code here, to run once:
   delay(3000);
   robot.Stop();
-  robot.Drive(255, -PI_FOURTH);
 }
 
 void loop() {
