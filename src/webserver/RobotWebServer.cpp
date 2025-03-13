@@ -131,7 +131,14 @@ class RobotWebServer
     // set up callback for http get requests
     server_ptr->on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/index.html");
-  });
+    });
+    server_ptr->on("/script.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/script.js", "text/javascript");
+    });
+    server_ptr->on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/style.css", "text/css");
+    });
+  
 
   // Start server
   server_ptr->begin();
