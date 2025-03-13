@@ -13,3 +13,12 @@ Features:
 
 ## Notes
 - All positions, distances are measured as integer values representing millimeter precision
+
+
+## SPIFFS
+The web server uses the spi ffs file system to store the web page. To build and update the ffs go to 
+- platformio > Platform > Build Filesystem Image 
+and
+- platformio > Platform > Upload Filesystem Image 
+
+The file system files are stored in the `/data` folder

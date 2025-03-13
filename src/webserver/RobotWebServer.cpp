@@ -2,8 +2,9 @@
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include <webserver/index.html>
+//#include <webserver/index.html>
 #include <Arduino.h>
+#include "SPIFFS.h"
 
 #ifndef ROBOT_WEB_SERVER_CPP
 #define ROBOT_WEB_SERVER_CPP
@@ -93,6 +94,12 @@ class RobotWebServer
     {
       Serial.begin(115200);
     }*/
+   // start spi File system
+    if(!SPIFFS.begin(true))
+    {
+      Serial.println("An Error has occurred while mounting SPIFFS");
+      return;
+    }
 
     pinMode(LED_BUILTIN, OUTPUT);
 
@@ -123,7 +130,7 @@ class RobotWebServer
 
     // set up callback for http get requests
     server_ptr->on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/html", index_html);
+    request->send(SPIFFS, "/index.html");
   });
 
   // Start server
