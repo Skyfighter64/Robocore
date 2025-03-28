@@ -100,6 +100,18 @@ void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 }
 
 
+/**
+ * 
+ *  Interrupts for encoders
+ * 
+ */
+
+void IRAM_ATTR ISR_left() 
+{
+  encoderL.increaseCount();
+}
+
+
 void setup() 
 {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -112,6 +124,7 @@ void setup()
   // put your setup code here, to run once:
   delay(3000);
   robot.Stop();
+  attachInterrupt(LEFT_ENCODER, ISR_left, RISING);
   Serial.println("Setup done");
 }
 
@@ -132,5 +145,5 @@ void loop() {
     logger.print(String(encoderL.getCount()));
     logger.print("Right: ");
     logger.print(String(encoderR.getCount()));
-  }
+  } 
 }

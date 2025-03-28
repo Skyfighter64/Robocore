@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <stdint.h>
-#include "FunctionalInterrupt.h"
+#include <stdlib.h>
 
 #ifndef ROTARY_ENCODER_CPP
 #define ROTARY_ENCODER_CPP
@@ -21,6 +21,7 @@ private:
   // minimum consecutive number of times the measurement has to be the same to count (max. is 2* threshold)
   // (technically the actual threshold can be up to the double depending on the situation)
   int historyThreshold;
+  unsigned long last_time = 0;
   
   
   int sensorHistory = 0;
@@ -32,13 +33,6 @@ private:
   // difference to last value returned by either getCountDelta() or getCount()
   uint32_t delta = 0;
 
-  // interrupt routine
-  void IRAM_ATTR isr() 
-  {
-    // increase count and delta
-    count ++;
-    delta ++;
-  }
 
 public: 
   /**
@@ -53,16 +47,23 @@ public:
 
     // initialize sensor pin
     pinMode(pin, INPUT);
-    // add interrupt to pin
-    attachInterrupt(pin, std::bind(&RotaryEncoder::isr, this), RISING); 
   }
-  /**
-   * destructor
-   */
-  ~RotaryEncoder()
+
+  
+  // interrupt routine
+  void increaseCount() 
   {
-    // detach the interrupt for this object
-    detachInterrupt(pin);
+    // debounce timeout for 1ms
+    unsigned long time = micros();
+    if(time - last_time < 25000)
+    {
+      return;
+    }
+    last_time = time;
+
+    // increase count and delta
+    count ++;
+    delta ++;
   }
 
   int getCount()
