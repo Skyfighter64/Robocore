@@ -6,7 +6,7 @@
 
 
 //define rotary encoder pin numbers
-#define LEFT_ENCODER 2
+#define LEFT_ENCODER 4
 #define RIGHT_ENCODER 5
 // encoder specific parameters
 #define ENCODER_STEPS 36
@@ -15,7 +15,7 @@
 RobotWebServer server = RobotWebServer();
 Logger logger = Logger(server);
 
-RotaryEncoder encoderL(LEFT_ENCODER, ENCODER_STEPS, HISTORY_SIZE);;
+RotaryEncoder encoderL(LEFT_ENCODER, ENCODER_STEPS, HISTORY_SIZE);
 RotaryEncoder encoderR(RIGHT_ENCODER, ENCODER_STEPS, HISTORY_SIZE);
 
 DifferentialDrive robot = DifferentialDrive();
@@ -112,6 +112,7 @@ void setup()
   // put your setup code here, to run once:
   delay(3000);
   robot.Stop();
+  Serial.println("Setup done");
 }
 
 void loop() {
@@ -122,8 +123,8 @@ void loop() {
   // update encoders
   for(int i = 0; i < 1; i++)
   {
-    encoderL.Update();
-    encoderR.Update();
+    //encoderL.Update();
+    //encoderR.Update();
   }
   if(encoderL.peekCountDelta() > 0 || encoderR.peekCountDelta() > 0)
   {

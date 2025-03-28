@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <stdint.h>
+#include "FunctionalInterrupt.h"
 
 #ifndef ROTARY_ENCODER_CPP
 #define ROTARY_ENCODER_CPP
@@ -31,42 +32,19 @@ private:
   // difference to last value returned by either getCountDelta() or getCount()
   uint32_t delta = 0;
 
-  /**
-   * Function to measure the next sensor value.
-   * @return: the measurement result (0/1) or -1 if no 
-   * valid result was determined
-   */
-  int Measure()
+  // interrupt routine
+  void IRAM_ATTR isr() 
   {
-    //read pin, check if count needs increase, update history, update lastMeasurement if needed
-    bool measurement = digitalRead(pin);
-    // increase / decrease sensorHistory depending on the measurement
-    sensorHistory += measurement ? 1 : -1;
-
-
-    // check if enough consecutive 1's / 0's are reached
-    // this is done for debouncing/smoothening the output
-    if(sensorHistory >= historyThreshold)
-    {
-      sensorHistory = 0;
-      return 1;
-    }
-    else if (sensorHistory < -historyThreshold)
-    {
-      sensorHistory = 0;
-      return 0;
-    }    
-
-    // no result yet
-    return -1;
+    // increase count and delta
+    count ++;
+    delta ++;
   }
 
-  
+public: 
   /**
    * Constructor
    * 
    */
- public:
   RotaryEncoder(int pin, int diskLines, int historyThreshold)
   {
     this->pin = pin;
@@ -75,25 +53,16 @@ private:
 
     // initialize sensor pin
     pinMode(pin, INPUT);
+    // add interrupt to pin
+    attachInterrupt(pin, std::bind(&RotaryEncoder::isr, this), RISING); 
   }
-  
-  void Update()
+  /**
+   * destructor
+   */
+  ~RotaryEncoder()
   {
-    int measurement = this->Measure();
-    if(measurement == -1)
-    {
-      // do nothing
-      return;
-    }
-
-    if (measurement && ! lastMeasurement)
-    {
-      //sensor measured a low and then a high
-      count ++;
-      delta ++;
-    }
-
-    lastMeasurement = (bool) measurement;
+    // detach the interrupt for this object
+    detachInterrupt(pin);
   }
 
   int getCount()
