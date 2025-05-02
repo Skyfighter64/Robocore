@@ -73,6 +73,17 @@ void processEvent(void *arg, uint8_t *data, size_t len)
       logger.print("turning right");
       robot.Drive(255,-PI_FOURTH);
     }
+    else if (strcmp((char*)data, "resetEncoders") == 0) 
+    {
+      logger.print("Resetting  Encoders");
+      encoderL.reset();
+      encoderR.reset();
+      logger.print("Left: ");
+      logger.print(String(encoderL.getCount()));
+      logger.print("Right: ");
+      logger.print(String(encoderR.getCount()));
+
+    }
   }
 } 
 
@@ -139,7 +150,7 @@ void loop() {
     //encoderL.Update();
     //encoderR.Update();
   }
-  if(encoderL.peekCountDelta() > 0 || encoderR.peekCountDelta() > 0)
+  if(encoderL.peekCountDelta() > 10 || encoderR.peekCountDelta() > 10)
   {
     logger.print("Left: ");
     logger.print(String(encoderL.getCount()));

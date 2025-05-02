@@ -38,6 +38,7 @@ function initButton()
   document.getElementById('forwardButton').addEventListener('click', forwardRobot);
   document.getElementById('turnLeftButton').addEventListener('click', function(){ websocket.send("turnLeft");});
   document.getElementById('turnRightButton').addEventListener('click', function(){ websocket.send("turnRight");});
+  document.getElementById('resetEncodersButton').addEventListener('click', function(){ websocket.send("resetEncoders");});
 }
 function toggle()
 {
