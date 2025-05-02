@@ -110,6 +110,12 @@ public:
     return count % diskLines;
   }
 
+  void reset()
+  {
+      count = 0;
+      delta = 0;
+  };
+
 };
 
 #endif //ROTARY_ENCODER_CPP
