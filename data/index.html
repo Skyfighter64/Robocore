@@ -14,11 +14,39 @@
         </pres>
     </div>
     <p>Use W/A/S/D to drive the robot</p>
-    <p><button id="stopButton" class="button">Stop</button></p>
-    <p><button id="forwardButton" class="button">Forward</button></p>
-    <p><button id="turnLeftButton" class="button">Turn Left</button></p>
-    <p><button id="turnRightButton" class="button">Turn Right</button></p>
-    <p><button id="resetEncodersButton" class="button">Reset Encoders</button></p>
 
+<div class="button-row">
+  <button id="stopButton" class="button">Stop</button>
+  <button id="forwardButton" class="button">Forward</button>
+  <button id="turnLeftButton" class="button">Turn Left</button>
+  <button id="turnRightButton" class="button">Turn Right</button>
+  <button id="resetEncodersButton" class="button">Reset Encoders</button>
+</div>
+<br/>
+    <div class="container">
+      <div class="header-row">
+        <div class="label"></div>
+        <div class="wheel-title">Left Wheel</div>
+        <div class="wheel-title">Right Wheel</div>
+      </div>
+  
+      <div class="data-row">
+        <div class="label">Wheel Speed (Rounds per 1000s):</div>
+        <div class="value" id="speedL">--</div>
+        <div class="value" id="speedR">--</div>
+      </div>
+  
+      <div class="data-row">
+        <div class="label">Encoder Count:</div>
+        <div class="value" id="countL">--</div>
+        <div class="value" id="countR">--</div>
+      </div>
+  
+      <div class="data-row">
+        <div class="label">Total Distance (cm):</div>
+        <div class="value" id="distanceL">--</div>
+        <div class="value" id="distanceR">--</div>
+      </div>
+    </div>
   </body>
 </html>

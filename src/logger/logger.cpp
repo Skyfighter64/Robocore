@@ -67,17 +67,17 @@ Logger(RobotWebServer &_server) : server(_server)
 
 }
 
-/**
- * convert the given string into logger format
-*/
-String createLogLine(String text)
-{
-    return "[" + getTimeStamp() + "]: " + text + "\n";
-}
 
 void print(String text)
 {
-    this->server.sendText(createLogLine(text));
+    JsonDocument doc;
+    doc["time"] = millis();
+    doc["sensor"] = "log";
+    doc["text"] = text;
+
+    String output;
+    serializeJson(doc, output);
+    this->server.sendText(output);
 }
 
 

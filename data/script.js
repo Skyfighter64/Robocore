@@ -22,14 +22,18 @@ function onClose(event)
 
 function onMessage(event) 
 {
+  // parse json event data
+  console.log(event.data)
+  const data = JSON.parse(event.data)
+
   // append log data to the log
-  if(event.data.startsWith("tacho:"))
+  if(data["sensor"] == "encoder")
   {
-    setTacho(event.data.slice(6));
+    displayEncoder(data);
   }
   else
   {
-    appendLog(event.data);
+    appendLog(data);
   }
 }
 // initialize web socket and buttons
@@ -52,13 +56,31 @@ function toggle()
   websocket.send('toggle');
 }
 
-function appendLog(text)
+function appendLog(data)
 {
   // escape any html, etc...
-  text = document.createTextNode(text);
-  console.log('Appending text: ' + text);
-  document.getElementById('log_text').appendChild(text);
+  textNode = document.createTextNode(data["time"] + ": " + data["text"]);
+  document.getElementById('log_text').appendChild(textNode);
 };
+
+function displayEncoder(data)
+{
+  const wheel = data["wheel"]
+
+  if(wheel == "l")
+  {
+    if ('speed' in data) document.getElementById('speedL').textContent = data.speed;
+    if ('count' in data) document.getElementById('countL').textContent = data.count;
+    if ('distance' in data) document.getElementById('distanceL').textContent = data.distance;
+  }
+  else if (wheel == "r")
+  {
+    if ('speed' in data) document.getElementById('speedR').textContent = data.speed;
+    if ('count' in data) document.getElementById('countR').textContent = data.count;
+    if ('distance' in data) document.getElementById('distanceR').textContent = data.distance;
+  }
+
+}
 
 function stopRobot(){
   websocket.send('stopRobot');
