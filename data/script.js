@@ -59,7 +59,7 @@ function toggle()
 function appendLog(data)
 {
   // escape any html, etc...
-  textNode = document.createTextNode(data["time"] + ": " + data["text"]);
+  textNode = document.createTextNode(data["time"] + ": " + data["text"] + "\n");
   document.getElementById('log_text').appendChild(textNode);
 };
 
