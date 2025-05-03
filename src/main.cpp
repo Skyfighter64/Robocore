@@ -121,6 +121,10 @@ void IRAM_ATTR ISR_left()
 {
   encoderL.increaseCount();
 }
+void IRAM_ATTR ISR_right() 
+{
+  encoderR.increaseCount();
+}
 
 
 void setup() 
@@ -135,6 +139,7 @@ void setup()
   // put your setup code here, to run once:
   delay(3000);
   robot.Stop();
+  attachInterrupt(RIGHT_ENCODER, ISR_right, RISING);
   attachInterrupt(LEFT_ENCODER, ISR_left, RISING);
   Serial.println("Setup done");
 }
@@ -146,5 +151,5 @@ void loop() {
   
   logger.displayEncoderData("l", encoderL);
   logger.displayEncoderData("r", encoderR);
-  delay(1000);
+  delay(200);
 }
