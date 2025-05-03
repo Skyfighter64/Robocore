@@ -1,5 +1,7 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include <webserver/RobotWebServer.cpp>
+#include <core/rotary_encoder.cpp>
 
 #ifndef LOGGER_CPP
 #define LOGGER_CPP
@@ -9,6 +11,28 @@
  * functionality to the web interface 
  * and serial connection
  * 
+*/
+
+
+/**
+ * Logging JSON format
+ * {
+ *      "time" : <millisecond timestamp>,
+ *      "sensor" : "log",
+ *      "data" : "Log message goes here"
+ * }
+ */
+
+/**
+ * Encoder data JSON format
+ * {
+ *      "time" : <millisecond timestamp>,
+ *      "sensor" : "encoder",
+ *      "wheel" : l|r
+ *      "count" : <wheel count integer>
+ *      "speed" : <current speed>
+ *      "distance" : <total rotated distance> 
+ * }
 */
 
 class Logger
