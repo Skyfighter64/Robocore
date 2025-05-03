@@ -32,6 +32,8 @@ private:
   uint32_t count = 0;
   // difference to last value returned by either getCountDelta() or getCount()
   uint32_t delta = 0;
+  // current speed in steps per 1000 seconds
+  uint32_t speed = 0;
 
 
 public: 
@@ -55,7 +57,9 @@ public:
   {
     // debounce timeout for 1ms
     unsigned long time = micros();
-    if(time - last_time < 25000)
+    // time since the last measurement
+    unsigned long deltaTime = time - last_time;
+    if(deltaTime < 25000)
     {
       return;
     }
@@ -64,6 +68,9 @@ public:
     // increase count and delta
     count ++;
     delta ++;
+    // calculate and set the current speed in 1/1000 rounds per second (aka rounds per 1000 seconds)
+    // for numerical stability
+    speed = (1000000 / diskLines) / deltaTime; 
   }
 
   int getCount()
@@ -97,23 +104,22 @@ public:
   /** 
    *  return how many full rotations have been done since the beginning
    */
-  int getRounds()
+  double getRounds()
   {
-    return count / diskLines;
+    return (double) count / diskLines;
   }
 
-  /** 
-   *  return how many steps (black lines of the encoder wheel) have been counted since last full rotation
-   */
-  int getSteps()
+  // get the speed in rounds per 1000 seconds 
+  double getRPkS()
   {
-    return count % diskLines;
+    return this->speed;
   }
 
   void reset()
   {
       count = 0;
       delta = 0;
+      speed = 0;
   };
 
 };

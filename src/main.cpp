@@ -144,17 +144,7 @@ void loop() {
   // drive forward
   //logger.print("Driving forward");
   
-  // update encoders
-  for(int i = 0; i < 1; i++)
-  {
-    //encoderL.Update();
-    //encoderR.Update();
-  }
-  if(encoderL.peekCountDelta() > 10 || encoderR.peekCountDelta() > 10)
-  {
-    logger.print("Left: ");
-    logger.print(String(encoderL.getCount()));
-    logger.print("Right: ");
-    logger.print(String(encoderR.getCount()));
-  } 
+  logger.displayEncoderData("l", encoderL);
+  logger.displayEncoderData("r", encoderR);
+  delay(1000);
 }

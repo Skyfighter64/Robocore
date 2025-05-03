@@ -33,7 +33,7 @@
  *      "speed" : <current speed>
  *      "distance" : <total rotated distance> 
  * }
-*/
+ */
 
 class Logger
 {
@@ -79,6 +79,26 @@ void print(String text)
 {
     this->server.sendText(createLogLine(text));
 }
+
+
+/**
+ * Encoder Logging
+ */
+void displayEncoderData(String wheel, RotaryEncoder encoder)
+{
+    JsonDocument doc;
+    doc["time"] = millis();
+    doc["sensor"] = "encoder";
+    doc["wheel"] = wheel;
+    doc["speed"] = encoder.getRPkS(); // speed in rounds per 1000s
+    doc["count"] = encoder.getCount();
+    doc["distance"] = encoder.getRounds() * 31.4159; // distance in cm // todo: replace hard coded U with robot stats
+
+    String output;
+    serializeJson(doc, output);
+    this->server.sendText(output);
+}
+
 
 /*
 todos for this class:

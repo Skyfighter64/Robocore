@@ -23,7 +23,14 @@ function onClose(event)
 function onMessage(event) 
 {
   // append log data to the log
-  appendLog(event.data);
+  if(event.data.startsWith("tacho:"))
+  {
+    setTacho(event.data.slice(6));
+  }
+  else
+  {
+    appendLog(event.data);
+  }
 }
 // initialize web socket and buttons
 window.addEventListener('load', onLoad);
